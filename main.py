@@ -10,6 +10,9 @@ Version 1 - Basic Menu Design
 
 from tkinter import *
 from tkinter import ttk
+
+import game
+
 CELL_SIZE = 50
 
 root = Tk()
