@@ -31,7 +31,7 @@ class GameController:
         self.board[self.snake[-1][0]][self.snake[-1][1]] = 0
         self.snake.pop()
         
-        self.call_event("draw_board")
+        self.call_event("draw_board", self.board)
     
     def create_event(self, event: str, func: callable) -> None:
         """Create a game event to be called on certain conditions.
