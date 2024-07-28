@@ -11,32 +11,34 @@ from tkinter import ttk
 from game import GameController
 import gui
 import time
+import keyboard
 
 # Constants
 GRID_X = 10
 GRID_Y = 20
 
+game = GameController(GRID_X, GRID_Y)
+
+def up(): game.dir = [0, -1]
+def down(): game.dir = [0, 1]
+def left(): game.dir = [-1, 0]
+def right(): game.dir = [1, 0]
+
+keyboard.add_hotkey('w', up)
+keyboard.add_hotkey('s', down)
+keyboard.add_hotkey('a', left)
+keyboard.add_hotkey('d', right)
+
+
 def play():
-    game = GameController(GRID_X, GRID_Y)
-    print(game) # Print initial board
-
-    game.step() # Move right 1
-    print(game)
-
-    game.dir = [0, 1] # Move down 1 (Note: y value increases going down the board)
-    game.step()
-    print(game)
-
-    game.dir = [-1, 0] # Move left 1
-    game.step()
-    print(game)
-
-    game.dir = [0, -1] # Move up 1
-    game.step()
-    print(game)
-
     game_screen = gui.GameScreen(GRID_X, GRID_Y)
+
     game.create_event("draw_board", game_screen.update_gamespace)
+    game_screen.update_gamespace(game.board)
+
+    while True:
+        time.sleep(0.5)
+        game.step()
 
 
 gui.Menu(exit, play)
