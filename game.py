@@ -2,7 +2,7 @@ class GameController:
     def __init__(self, width=3, height=2) -> None:
         # Note to self: board 2d list is formatted so you can do board[x][y]
         self.board = [[0]*height for i in range(width)]
-        self.snake = [[0, 1]]
+        self.snake = [[0, 5], [0, 4], [0, 3], [0, 2], [0, 1]]
         self.board[0][1] = 1
         self.dir = [1, 0] # Steps for the snake, x, y
         self.events = []

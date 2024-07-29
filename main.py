@@ -17,25 +17,31 @@ import keyboard
 GRID_X = 10
 GRID_Y = 20
 
-game = GameController(GRID_X, GRID_Y)
+game = None
 
-def up(): game.dir = [0, -1]
-def down(): game.dir = [0, 1]
-def left(): game.dir = [-1, 0]
-def right(): game.dir = [1, 0]
-
-keyboard.add_hotkey('w', up)
-keyboard.add_hotkey('s', down)
-keyboard.add_hotkey('a', left)
-keyboard.add_hotkey('d', right)
-
+def key_down(event: keyboard.KeyboardEvent):
+    if event.name in ["w", "up"]:
+        game.dir = [0, -1]
+    elif event.name in ["s", "down"]:
+        game.dir = [0, 1]
+    elif event.name in ["a", "left"]:
+        game.dir = [-1, 0]
+    elif event.name in ["d", "right"]:
+        game.dir = [1, 0]
 
 def play():
+    # Declare board and gui
+    global game
+    game = GameController(GRID_X, GRID_Y)
     game_screen = gui.GameScreen(GRID_X, GRID_Y)
 
+    # Set events
     game.create_event("draw_board", game_screen.update_gamespace)
     game_screen.update_gamespace(game.board)
 
+    keyboard.on_press(key_down)
+
+    # Run the game
     while True:
         time.sleep(0.5)
         game.step()
