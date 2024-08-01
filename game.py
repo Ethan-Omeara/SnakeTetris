@@ -2,7 +2,7 @@ class GameController:
     def __init__(self, width=3, height=2) -> None:
         # Note to self: board 2d list is formatted so you can do board[x][y]
         self.board = [[0]*height for i in range(width)]
-        self.snake = [[0, 5], [0, 4], [0, 3], [0, 2], [0, 1]]
+        self.snake = [[0, 1],[0, 2],[0, 3],[0, 4],[0, 5]]
         self.board[0][1] = 1
         self.dir = [1, 0] # Steps for the snake, x, y
         self.events = []
@@ -22,8 +22,13 @@ class GameController:
         head = self.snake[0]
         # Get new snake head position
         new_head = [head[0] + self.dir[0], head[1] + self.dir[1]]
-        if not (new_head[0] in range(len(self.board)) or not new_head[1] in range(len(self.board[0]))):
-            self.call_event("end_snake")
+        # Check if a wall is hit
+        if (not new_head[0] in range(len(self.board)) or not (new_head[1] in range(len(self.board[0])))):
+            print("Game Ended - Snake hit wall")
+            self.call_event("end_game")
+            return
+
+
         self.snake.insert(0, new_head)
         # Update board
         self.board[new_head[0]][new_head[1]] = 1
@@ -43,4 +48,7 @@ class GameController:
     def call_event(self, event_name: str, arg=None) -> None:
         for event in self.events:
             if event[0] == event_name:
-                event[1](arg)
+                if arg == None:
+                    event[1]()
+                else:
+                    event[1](arg)

@@ -18,6 +18,7 @@ GRID_X = 10
 GRID_Y = 20
 
 game = None
+active = False
 
 def key_down(event: keyboard.KeyboardEvent):
     if event.name in ["w", "up"]:
@@ -29,22 +30,30 @@ def key_down(event: keyboard.KeyboardEvent):
     elif event.name in ["d", "right"]:
         game.dir = [1, 0]
 
+def end_game():
+    global active
+    active = False
+
 def play():
     # Declare board and gui
     global game
+    global active
+    active = True
     game = GameController(GRID_X, GRID_Y)
     game_screen = gui.GameScreen(GRID_X, GRID_Y)
 
     # Set events
     game.create_event("draw_board", game_screen.update_gamespace)
+    game.create_event("end_game", end_game)
     game_screen.update_gamespace(game.board)
 
     keyboard.on_press(key_down)
-
+    
     # Run the game
-    while True:
-        time.sleep(0.5)
+    time.sleep(1)
+    while active:
         game.step()
+        time.sleep(0.5)
 
 
 gui.Menu(exit, play)
