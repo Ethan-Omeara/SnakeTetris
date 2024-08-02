@@ -53,7 +53,7 @@ def play():
     time.sleep(1)
     while active:
         game.step()
-        time.sleep(0.5)
+        time.sleep(0.25)
 
 
 gui.Menu(exit, play)

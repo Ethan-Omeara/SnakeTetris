@@ -58,5 +58,7 @@ class GameScreen:
                     self.gamegrid[x][y].configure(background="gray")
                 elif grid[x][y] == 1:
                     self.gamegrid[x][y].configure(background="light green")
+                elif grid[x][y] == 2:
+                    self.gamegrid[x][y].configure(background="red")
         
         root.update()
