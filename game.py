@@ -46,29 +46,29 @@ class GameController:
         while snake_stop == False:
             # Check all spots directly below snake for something to block it
             for cell in self.snake:
+                print(cell[1]+1, len(self.board[1]))
                 if cell[1]+1 >= len(self.board[1]):
+                    print("Snake below board")
                     snake_stop = True
                     break
-                if self.board[cell[0]][cell[1]+1] == 2:
-                    snake_stop = True
-                    break
+                if self.board[cell[0]][cell[1]+1] == 1:
+                    # Check if cell is a part of existing snake
+                    if not [cell[0], cell[1]+1] in self.snake:
+                        print("Cell found below snake")
+                        snake_stop = True
+                        break
+            if snake_stop: break
             # If code has reached this point, the snake needs to move down 1
             # Remove previous snake
-            print("Moving Snake")
-            print(self)
             for cell in self.snake:
                 self.board[cell[0]][cell[1]] = 0
                 if cell[1] == self.divider:
                     self.board[cell[0]][cell[1]] = 3
-            print(self)
             # Create new snake
-            print(self.snake)
             for i, cell in enumerate(self.snake):
                 new_cell = [cell[0], cell[1]+1]
                 self.snake[i] = new_cell
                 self.board[new_cell[0]][new_cell[1]] = 1
-            print(self.snake)
-            print(self)
             
             self.call_event("draw_board", self.board)
             time.sleep(0.5)
