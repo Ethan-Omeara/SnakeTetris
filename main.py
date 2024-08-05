@@ -16,6 +16,7 @@ import keyboard
 # Constants
 GRID_X = 10
 GRID_Y = 20
+DIVIDER = 9 # Where to place the divider between the snake and tetris regions
 
 game = None
 active = False
@@ -39,8 +40,8 @@ def play():
     global game
     global active
     active = True
-    game = GameController(GRID_X, GRID_Y)
-    game_screen = gui.GameScreen(GRID_X, GRID_Y)
+    game = GameController(GRID_X, GRID_Y, DIVIDER)
+    game_screen = gui.GameScreen(GRID_X, GRID_Y, DIVIDER)
 
     # Set events
     game.create_event("draw_board", game_screen.update_gamespace)

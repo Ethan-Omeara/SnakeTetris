@@ -30,7 +30,7 @@ class Menu:
         root.mainloop()
 
 class GameScreen:
-    def __init__(self, size_x: int, size_y: int) -> None:
+    def __init__(self, size_x: int, size_y: int, divider: int) -> None:
         self.win = Toplevel(root)
         self.win.grab_set()
         self.win.title("Play Game")
@@ -60,5 +60,7 @@ class GameScreen:
                     self.gamegrid[x][y].configure(background="light green")
                 elif grid[x][y] == 2:
                     self.gamegrid[x][y].configure(background="red")
+                elif grid[x][y] == 3:
+                    self.gamegrid[x][y].configure(background="black")
         
         root.update()
