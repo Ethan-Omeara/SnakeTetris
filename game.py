@@ -46,7 +46,6 @@ class GameController:
         while snake_stop == False:
             # Check all spots directly below snake for something to block it
             for cell in self.snake:
-                print(cell[1]+1, len(self.board[1]))
                 if cell[1]+1 >= len(self.board[1]):
                     print("Snake below board")
                     snake_stop = True
@@ -72,6 +71,17 @@ class GameController:
             
             self.call_event("draw_board", self.board)
             time.sleep(0.5)
+        # Check for full rows
+        full_rows = list(range(self.divider+1, len(self.board[0])))
+        print(full_rows)
+        for column in self.board:
+            print(column)
+            for row, cell in enumerate(column):
+                print(row, cell)
+                if row > self.divider and cell == 0:
+                    full_rows.remove(row)
+        print(full_rows)
+
         # Reset board
         self.snake = [[0, 4],[0, 3],[0, 2],[0, 1]]
         for cell in self.snake:
