@@ -1,5 +1,6 @@
 import random
 import time
+import copy
 
 class GameController:
     def __init__(self, width, height, divider) -> None:
@@ -39,50 +40,68 @@ class GameController:
                 print(f"New apple at {x}, {y}")
                 self.board[x][y] = 2
                 break
-
-    def kill_snake(self) -> None:
-        """Display an animation for killing the snake, and reset program"""
-        snake_stop = False
-        while snake_stop == False:
+    
+    def drop_snake(self) -> None:
+        """Display animation to drop snake to the tetris board"""
+        # Remove snake on the board
+        for cell in self.snake:
+            self.board[cell[0]][cell[1]] = 0
+        
+        while True:
             # Check all spots directly below snake for something to block it
             for cell in self.snake:
-                if cell[1]+1 >= len(self.board[1]):
+                if cell[1]+1 >= len(self.board[0]):
                     print("Snake below board")
-                    snake_stop = True
-                    break
+                    return self.snake
                 if self.board[cell[0]][cell[1]+1] == 1:
-                    # Check if cell is a part of existing snake
-                    if not [cell[0], cell[1]+1] in self.snake:
-                        print("Cell found below snake")
-                        snake_stop = True
-                        break
-            if snake_stop: break
+                    print("Cell found below snake")
+                    return self.snake
             # If code has reached this point, the snake needs to move down 1
-            # Remove previous snake
-            for cell in self.snake:
-                self.board[cell[0]][cell[1]] = 0
-                if cell[1] == self.divider:
-                    self.board[cell[0]][cell[1]] = 3
-            # Create new snake
+            # Create new snake on a temporary board (for animation)
+            temp_board = copy.deepcopy(self.board)
             for i, cell in enumerate(self.snake):
                 new_cell = [cell[0], cell[1]+1]
                 self.snake[i] = new_cell
-                self.board[new_cell[0]][new_cell[1]] = 1
+                temp_board[new_cell[0]][new_cell[1]] = 1
             
-            self.call_event("draw_board", self.board)
-            time.sleep(0.5)
+            self.call_event("draw_board", temp_board)
+            time.sleep(0.05)
+
+    def check_tetris(self) -> None:
+        """Check the board below the divider and adjust for tetris rules"""
+        
+        # Check if any piece goes above the divider
+        for cell in self.snake:
+            if cell[1] <= self.divider:
+                print("Snake above tetris board, game ended")
+                self.call_event("end_game")
+                return
+
         # Check for full rows
         full_rows = list(range(self.divider+1, len(self.board[0])))
-        print(full_rows)
         for column in self.board:
-            print(column)
             for row, cell in enumerate(column):
-                print(row, cell)
-                if row > self.divider and cell == 0:
+                if row > self.divider and cell == 0 and row in full_rows:
                     full_rows.remove(row)
-        print(full_rows)
+        # Remove all full rows, and shuffle everything else down
+        for removed_row in full_rows:
+            for column, _ in enumerate(self.board):
+                # Loop from the bottom up
+                rows = len(self.board[0])-1
+                for row in range(rows, -1, -1):
+                    if row == removed_row:
+                        self.board[column][row] = 0
+                    elif row < removed_row and row > self.divider:
+                        self.board[column][row+1] = self.board[column][row]
 
-        # Reset board
+
+    def kill_snake(self) -> None:
+        """Run through code to kill the snake"""
+        dropped_snake = self.drop_snake()
+        for cell in dropped_snake:
+            self.board[cell[0]][cell[1]] = 1
+        self.check_tetris()
+
         self.snake = [[0, 4],[0, 3],[0, 2],[0, 1]]
         for cell in self.snake:
             self.board[cell[0]][cell[1]] = 1
