@@ -63,17 +63,21 @@ class GameController:
         # 1                 3
         # |                 |
         # |                 |
-        side = random.randint(1, 3)
         start_pos = None
-        if side == 1:
-            self.dir = [1, 0]
-            start_pos = [0, random.choice(range(1, self.divider-1))]
-        elif side == 2:
-            self.dir = [0, 1]
-            start_pos = [random.choice(range(1, width-1)), 0]
-        elif side == 3:
-            self.dir = [-1, 0]
-            start_pos = [width-1, random.choice(range(1, self.divider-1))]
+        valid = False
+        while not valid:
+            side = random.randint(1, 3)
+            if side == 1:
+                self.dir = [1, 0]
+                start_pos = [0, random.choice(range(1, self.divider-1))]
+            elif side == 2:
+                self.dir = [0, 1]
+                start_pos = [random.choice(range(1, width-1)), 0]
+            elif side == 3:
+                self.dir = [-1, 0]
+                start_pos = [width-1, random.choice(range(1, self.divider-1))]
+            # Check if spawn space is blank
+            valid = self.board[start_pos[0]][start_pos[1]] == 0
 
         self.snake = [start_pos for i in range(4)]
         self.board[start_pos[0]][start_pos[1]] = 1
@@ -138,6 +142,12 @@ class GameController:
         for cell in dropped_snake:
             self.board[cell[0]][cell[1]] = 1
         self.check_tetris()
+        # Find the apple and make it a "tree", blocking the snake
+        for x, column in enumerate(self.board):
+            for y, cell in enumerate(column):
+                if cell == 2:
+                    self.board[x][y] = 3
+        self.create_apple()
 
         self.spawn_snake()
             
