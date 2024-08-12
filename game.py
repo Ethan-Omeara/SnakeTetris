@@ -5,16 +5,17 @@ import copy
 class GameController:
     def __init__(self, width, height, divider) -> None:
         # Note to self: board 2d list is formatted so you can do board[x][y]
-        self.board = [[0]*height for i in range(width)]
-        self.spawn_snake()
+        # Initialise variables
+        self._dir = [0, 0]
         self.events = []
-
+        self.board = [[0]*height for i in range(width)]
         self.divider = divider
+
+        # Setup board
+        self.spawn_snake()
         for column in self.board:
             column[divider] = 3
-
         self.create_apple() # Create first apple
-        print(self)
     
     def __str__(self) -> str:
         board_str=''
@@ -24,6 +25,20 @@ class GameController:
                 board_str = board_str+str(column[row])+' '
             board_str = board_str+'\n'
         return board_str
+    
+    # Create a "getter" for the dir property
+    @property
+    def dir(self) -> list:
+        return self._dir
+    
+    # Create a "setter" for dir
+    @dir.setter
+    def dir(self, new_direction):
+        # Only allow the direction to be changed if it is
+        # *not* the complete reverse direction
+        reverse_dir = [i*-1 for i in self.dir]
+        if not new_direction == reverse_dir:
+            self._dir = new_direction
     
     def create_apple(self) -> None:
         """Create an apple randomly on the board"""
