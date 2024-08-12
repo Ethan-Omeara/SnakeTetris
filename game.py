@@ -6,10 +6,7 @@ class GameController:
     def __init__(self, width, height, divider) -> None:
         # Note to self: board 2d list is formatted so you can do board[x][y]
         self.board = [[0]*height for i in range(width)]
-        self.snake = [[0, 4],[0, 3],[0, 2],[0, 1]]
-        for cell in self.snake:
-            self.board[cell[0]][cell[1]] = 1
-        self.dir = [1, 0] # Steps for the snake, x, y
+        self.spawn_snake()
         self.events = []
 
         self.divider = divider
@@ -40,6 +37,31 @@ class GameController:
                 print(f"New apple at {x}, {y}")
                 self.board[x][y] = 2
                 break
+
+    def spawn_snake(self) -> None:
+        width = len(self.board)
+        # Pick starting position and direction
+        # Note corners will not be chosen due to ambiguity with directions
+        # ---------2---------
+        # |                 |
+        # |                 |
+        # 1                 3
+        # |                 |
+        # |                 |
+        side = random.randint(1, 3)
+        start_pos = None
+        if side == 1:
+            self.dir = [1, 0]
+            start_pos = [0, random.choice(range(1, self.divider-1))]
+        elif side == 2:
+            self.dir = [0, 1]
+            start_pos = [random.choice(range(1, width-1)), 0]
+        elif side == 3:
+            self.dir = [-1, 0]
+            start_pos = [width-1, random.choice(range(1, self.divider-1))]
+
+        self.snake = [start_pos for i in range(4)]
+        self.board[start_pos[0]][start_pos[1]] = 1
     
     def drop_snake(self) -> None:
         """Display animation to drop snake to the tetris board"""
@@ -96,16 +118,13 @@ class GameController:
 
 
     def kill_snake(self) -> None:
-        """Run through code to kill the snake"""
+        """Run through code to kill the snake and respawn"""
         dropped_snake = self.drop_snake()
         for cell in dropped_snake:
             self.board[cell[0]][cell[1]] = 1
         self.check_tetris()
 
-        self.snake = [[0, 4],[0, 3],[0, 2],[0, 1]]
-        for cell in self.snake:
-            self.board[cell[0]][cell[1]] = 1
-        self.dir = [1, 0] # Steps for the snake, x, y
+        self.spawn_snake()
             
 
     def step(self) -> None:
@@ -135,8 +154,9 @@ class GameController:
         # Check if apple is hit, if it isn't then skip taking off the end
         # (causing the snake to get longer)
         if self.board[new_head[0]][new_head[1]] != 2:
-            # Remove the end of the snake
-            self.board[self.snake[-1][0]][self.snake[-1][1]] = 0
+            # Remove the end of the snake (checking no other part of the snake is there)
+            if not self.snake[-1] in self.snake[:-1]:
+                self.board[self.snake[-1][0]][self.snake[-1][1]] = 0
             self.snake.pop()
         else:
             self.create_apple()
