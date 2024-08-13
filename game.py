@@ -6,13 +6,14 @@ class GameController:
     def __init__(self, width, height, divider) -> None:
         # Note to self: board 2d list is formatted so you can do board[x][y]
         # Initialise variables
+        self.last_dir = [0, 0]
         self._dir = [0, 0]
         self.events = []
         self.board = [[0]*height for i in range(width)]
         self.divider = divider
 
         # Setup board
-        self.spawn_snake()
+        self.spawn_snake(animate=False)
         for column in self.board:
             column[divider] = 3
         self.create_apple() # Create first apple
@@ -36,7 +37,7 @@ class GameController:
     def dir(self, new_direction):
         # Only allow the direction to be changed if it is
         # *not* the complete reverse direction
-        reverse_dir = [i*-1 for i in self.dir]
+        reverse_dir = [i*-1 for i in self.last_dir]
         if not new_direction == reverse_dir:
             self._dir = new_direction
     
@@ -53,7 +54,7 @@ class GameController:
                 self.board[x][y] = 2
                 break
 
-    def spawn_snake(self) -> None:
+    def spawn_snake(self, animate=True) -> None:
         width = len(self.board)
         # Pick starting position and direction
         # Note corners will not be chosen due to ambiguity with directions
@@ -69,18 +70,30 @@ class GameController:
             side = random.randint(1, 3)
             if side == 1:
                 self.dir = [1, 0]
+                self.last_dir = [1, 0]
                 start_pos = [0, random.choice(range(1, self.divider-1))]
             elif side == 2:
                 self.dir = [0, 1]
+                self.last_dir = [0, 1]
                 start_pos = [random.choice(range(1, width-1)), 0]
             elif side == 3:
                 self.dir = [-1, 0]
+                self.last_dir = [-1, 0]
                 start_pos = [width-1, random.choice(range(1, self.divider-1))]
             # Check if spawn space is blank
             valid = self.board[start_pos[0]][start_pos[1]] == 0
 
         self.snake = [start_pos for i in range(4)]
         self.board[start_pos[0]][start_pos[1]] = 1
+        if animate:
+            # Animate start
+            for i in range(3):
+                time.sleep(0.2)
+                self.board[start_pos[0]][start_pos[1]] = 0
+                self.call_event("draw_board", self.board)
+                time.sleep(0.2)
+                self.board[start_pos[0]][start_pos[1]] = 1
+                self.call_event("draw_board", self.board)
     
     def drop_snake(self) -> None:
         """Display animation to drop snake to the tetris board"""
@@ -189,6 +202,8 @@ class GameController:
         # Add head
         self.snake.insert(0, new_head)
         self.board[new_head[0]][new_head[1]] = 1
+        # Update last direction
+        self.last_dir = self.dir
         
         self.call_event("draw_board", self.board)
     
