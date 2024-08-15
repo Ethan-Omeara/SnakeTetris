@@ -53,8 +53,12 @@ def play():
     # Run the game
     time.sleep(1)
     while active:
+        start_time = time.time()
         game.step()
-        time.sleep(0.25)
+        process_time = time.time()
+        sleep_time = start_time+0.25-process_time
+        if sleep_time > 0:
+            time.sleep(sleep_time)
 
 
 gui.Menu(exit, play)

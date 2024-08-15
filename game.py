@@ -40,6 +40,8 @@ class GameController:
         reverse_dir = [i*-1 for i in self.last_dir]
         if not new_direction == reverse_dir:
             self._dir = new_direction
+        else:
+            print("Direction Not Permitted")
     
     def create_apple(self) -> None:
         """Create an apple randomly on the board"""
@@ -88,12 +90,12 @@ class GameController:
         if animate:
             # Animate start
             for i in range(3):
-                time.sleep(0.2)
                 self.board[start_pos[0]][start_pos[1]] = 0
                 self.call_event("draw_board", self.board)
                 time.sleep(0.2)
                 self.board[start_pos[0]][start_pos[1]] = 1
                 self.call_event("draw_board", self.board)
+                time.sleep(0.2)
     
     def drop_snake(self) -> None:
         """Display animation to drop snake to the tetris board"""
