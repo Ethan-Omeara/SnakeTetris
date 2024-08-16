@@ -71,16 +71,16 @@ class GameController:
         while not valid:
             side = random.randint(1, 3)
             if side == 1:
-                self.dir = [1, 0]
                 self.last_dir = [1, 0]
+                self.dir = [1, 0]
                 start_pos = [0, random.choice(range(1, self.divider-1))]
             elif side == 2:
-                self.dir = [0, 1]
                 self.last_dir = [0, 1]
+                self.dir = [0, 1]
                 start_pos = [random.choice(range(1, width-1)), 0]
             elif side == 3:
-                self.dir = [-1, 0]
                 self.last_dir = [-1, 0]
+                self.dir = [-1, 0]
                 start_pos = [width-1, random.choice(range(1, self.divider-1))]
             # Check if spawn space is blank
             valid = self.board[start_pos[0]][start_pos[1]] == 0
