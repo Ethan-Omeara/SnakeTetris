@@ -55,6 +55,9 @@ class GameScreen:
     def update_score(self, score):
         self.score_var.set("Score: " + str(score))
 
+    def end_game(self, score):
+        self.score_var.set("GAME ENDED\nFINAL SCORE: " + str(score))
+
     def update_gamespace(self, grid):
         size_x = len(grid)
         size_y = len(grid[0])
