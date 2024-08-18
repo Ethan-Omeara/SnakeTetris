@@ -45,8 +45,15 @@ class GameScreen:
                 cell = Frame(self.gamespace, background="gray", highlightbackground="black", highlightthickness=1, height=GAME_CELL_SIZE, width=GAME_CELL_SIZE)
                 cell.grid(column=x, row=y)
                 self.gamegrid[x].append(cell)
+        
+        # Setup score
+        self.score_var = StringVar(root, "Score: 0")
+        Label(self.win, textvariable=self.score_var, font=("System", 20, "bold")).grid(row=size_y+1, column=0, rowspan=size_x)
         #self.win.minsize(GAME_CELL_SIZE*size_x, GAME_CELL_SIZE*size_y)
         #self.win.maxsize(GAME_CELL_SIZE*size_x, GAME_CELL_SIZE*size_y)
+
+    def update_score(self, score):
+        self.score_var.set("Score: " + str(score))
 
     def update_gamespace(self, grid):
         size_x = len(grid)

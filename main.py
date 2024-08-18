@@ -46,6 +46,7 @@ def play():
     # Set events
     game.create_event("draw_board", game_screen.update_gamespace)
     game.create_event("end_game", end_game)
+    game.create_event("update_score", game_screen.update_score)
     game_screen.update_gamespace(game.board)
 
     keyboard.on_press(key_down)

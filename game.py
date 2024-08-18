@@ -11,6 +11,8 @@ class GameController:
         self.events = []
         self.board = [[0]*height for i in range(width)]
         self.divider = divider
+        self.score = 0
+        self.lives = 1
 
         # Setup board
         self.spawn_snake(animate=False)
@@ -139,6 +141,10 @@ class GameController:
             for row, cell in enumerate(column):
                 if row > self.divider and cell == 0 and row in full_rows:
                     full_rows.remove(row)
+        
+        self.score += 100 * (len(full_rows)**2) * self.lives
+        self.call_event("update_score", self.score)
+
         # Remove all full rows, and shuffle everything else down
         for removed_row in full_rows:
             for column, _ in enumerate(self.board):
@@ -163,7 +169,7 @@ class GameController:
                 if cell == 2:
                     self.board[x][y] = 3
         self.create_apple()
-
+        self.lives += 1
         self.spawn_snake()
             
 
