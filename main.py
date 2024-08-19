@@ -1,68 +1,73 @@
-"""
+"""This file runs the Snake-Tetris game and GUI.
+
 Author: Ethan O'Meara
 Date: 25/06/2024
-Description: A python program using Tkinter to run 
-             a game inspired by Snake and Tetris
+Description: A python program using Tkinter to run
+a game inspired by Snake and Tetris.
 """
 # Get relevant dictionaries
-from tkinter import *
-from tkinter import ttk
-
 from game import GameController
 import gui
-import time
+# Get base modules
+from time import time, sleep
 import keyboard
 
 # Constants
 GRID_X = 10
 GRID_Y = 20
-DIVIDER = 9 # Where to place the divider between the snake and tetris regions
+DIVIDER = 9  # Where to place the divider between the snake and tetris regions
 
-game = None
-game_screen = None
+Game = None
+GameScreen = None
 active = False
 
+
 def key_down(event: keyboard.KeyboardEvent):
+    """Handle keyboard events and communicate with game controller."""
     if event.name in ["w", "up"]:
-        game.dir = [0, -1]
+        Game.dir = [0, -1]
     elif event.name in ["s", "down"]:
-        game.dir = [0, 1]
+        Game.dir = [0, 1]
     elif event.name in ["a", "left"]:
-        game.dir = [-1, 0]
+        Game.dir = [-1, 0]
     elif event.name in ["d", "right"]:
-        game.dir = [1, 0]
+        Game.dir = [1, 0]
+
 
 def end_game():
+    """Stop the game loop and display final score."""
     global active
     active = False
-    game_screen.end_game(game.score)
+    GameScreen.end_game(Game.score)
+
 
 def play():
+    """Run the Tetris-Snake game."""
     # Declare board and gui
-    global game
-    global game_screen
+    global Game
+    global GameScreen
     global active
     active = True
-    game = GameController(GRID_X, GRID_Y, DIVIDER)
-    game_screen = gui.GameScreen(GRID_X, GRID_Y, DIVIDER)
+    Game = GameController(GRID_X, GRID_Y, DIVIDER)
+    GameScreen = gui.GameScreen(GRID_X, GRID_Y)
 
     # Set events
-    game.create_event("draw_board", game_screen.update_gamespace)
-    game.create_event("end_game", end_game)
-    game.create_event("update_score", game_screen.update_score)
-    game_screen.update_gamespace(game.board)
+    Game.create_event("draw_board", GameScreen.update_gamespace)
+    Game.create_event("end_game", end_game)
+    Game.create_event("update_score", GameScreen.update_score)
+    GameScreen.update_gamespace(Game.board)
 
     keyboard.on_press(key_down)
-    
+
     # Run the game
-    time.sleep(1)
+    sleep(1)
     while active:
-        start_time = time.time()
-        game.step()
-        process_time = time.time()
+        start_time = time()
+        Game.step()
+        process_time = time()
         sleep_time = start_time+0.25-process_time
         if sleep_time > 0:
-            time.sleep(sleep_time)
+            sleep(sleep_time)
 
 
 gui.Menu(exit, play)
