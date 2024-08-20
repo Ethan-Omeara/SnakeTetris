@@ -67,6 +67,7 @@ def play():
         process_time = time()
         sleep_time = start_time+0.25-process_time
         if sleep_time > 0:
+            print("Frame took too long!")
             sleep(sleep_time)
 
 
