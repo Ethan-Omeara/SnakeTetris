@@ -80,15 +80,15 @@ class GameScreen:
               font=("System", 20, "bold")).grid(
                   row=size_y+1, column=0, rowspan=size_x)
 
-    def update_score(self, score):
+    def update_score(self, score: int) -> None:
         """Update score label."""
         self.score_var.set("Score: " + str(score))
 
-    def end_game(self, score):
+    def end_game(self, score: int) -> None:
         """Display game end to user."""
         self.score_var.set("GAME ENDED\nFINAL SCORE: " + str(score))
 
-    def update_gamespace(self, grid):
+    def update_gamespace(self, grid: list) -> None:
         """Update the board with a given grid."""
         size_x = len(grid)
         size_y = len(grid[0])

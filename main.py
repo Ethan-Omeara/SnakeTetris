@@ -16,13 +16,14 @@ import keyboard
 GRID_X = 10
 GRID_Y = 20
 DIVIDER = 9  # Where to place the divider between the snake and tetris regions
+FRAME_TIME = 0.25  # Time per frame to aim fors
 
 Game = None
 GameScreen = None
 active = False
 
 
-def key_down(event: keyboard.KeyboardEvent):
+def key_down(event: keyboard.KeyboardEvent) -> None:
     """Handle keyboard events and communicate with game controller."""
     if event.name in ["w", "up"]:
         Game.dir = [0, -1]
@@ -34,14 +35,14 @@ def key_down(event: keyboard.KeyboardEvent):
         Game.dir = [1, 0]
 
 
-def end_game():
+def end_game() -> None:
     """Stop the game loop and display final score."""
     global active
     active = False
     GameScreen.end_game(Game.score)
 
 
-def play():
+def play() -> None:
     """Run the Tetris-Snake game."""
     # Declare board and gui
     global Game
@@ -65,9 +66,11 @@ def play():
         start_time = time()
         Game.step()
         process_time = time()
-        sleep_time = start_time+0.25-process_time
+        sleep_time = start_time+FRAME_TIME-process_time
         if sleep_time > 0:
             sleep(sleep_time)
+        else:
+            print("Frame took too long!")
 
 
 gui.Menu(exit, play)
