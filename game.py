@@ -3,26 +3,6 @@ import random
 import time
 import copy
 
-class Board:
-    """A datatype to store the game board"""
-    def __init__(self, rows, columns) -> None:
-        self.rows = rows
-        self.columns = columns
-
-        self._board = [[0]*columns for i in range(rows)]
-    
-    def __str__(self) -> str:
-        """Return a string representation of the board."""
-        board_str = ''
-        for row in range(self.rows):
-            for column in range(self.columns):
-                board_str = board_str+str(column[row])+' '
-            board_str = board_str+'\n'
-        return board_str
-    
-    def __call__(self, *args: random.Any, **kwds: random.Any) -> random.Any:
-        pass
-        
 
 class GameController:
     """Contains functions to run game."""
@@ -45,6 +25,16 @@ class GameController:
             column[divider] = 3
         # Create first apple
         self.create_apple()
+
+    def __str__(self) -> str:
+        """Return a string representation of the board."""
+        board_str = ''
+        rows = len(self.board[0])
+        for row in range(rows):
+            for column in self.board:
+                board_str = board_str+str(column[row])+' '
+            board_str = board_str+'\n'
+        return board_str
 
     # Create a "getter" for the dir property
     @property
